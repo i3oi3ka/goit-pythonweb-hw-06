@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres
+    image: postgres:latest
     container_name: hw6_postgres
     environment:
       POSTGRES_DB: mydatabase
@@ -12,4 +12,5 @@ services:
       - pgdata:/var/lib/postgresql/data
 
 volumes:
-  pgdata: hw6_postgres_data
+  pgdata:
+    name: hw6_postgres_data
