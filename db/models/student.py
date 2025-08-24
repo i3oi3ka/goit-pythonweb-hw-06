@@ -1,6 +1,6 @@
 from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
-from db.base import Base
+from db.models.base import Base
 
 
 class Student(Base):
