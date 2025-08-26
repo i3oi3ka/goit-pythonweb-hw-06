@@ -1,15 +1,15 @@
 services:
-  hw_6_db:
-    image: postgres:17.6-alpine
+  db:
+    image: postgres
+    restart: always
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 11111111
-      POSTGRES_DB: hw_6_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
 
 volumes:
-  pgdata:
-    name: hw6_postgres_data
+  db_data:
