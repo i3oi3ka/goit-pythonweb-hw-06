@@ -86,15 +86,64 @@ def select_7(group_name: str = "MCS-7", subject: str = "Python"):
 
 
 def select_8(teacher_name: str = "Keith Smith"):
-    teacher = session.query(Teacher).where(Teacher.name == teacher_name).first()
-    subjects = session.query(Subject.id).where(Subject.teacher_id == teacher.id).all()
+    try:
+        result = (
+            session.query(func.avg(Grade.grade).label("avg_grade"))
+            .join(Subject, Grade.subject_id == Subject.id)
+            .filter(Subject.teacher_id == Teacher.id)
+            .filter(Teacher.name == teacher_name)
+            .scalar()
+        )
 
-    if not teacher:
-        return "teacher not found"
-    return (
-        session.query(func.avg(Grade.grade)).where(Grade.subject_id.in_(subjects)).all()
-    )
+        if not result:
+            return "no grades found for this teacher"
+
+        return round(float(result), 2)
+
+    except Exception as e:
+        return f"error: {str(e)}"
+
+
+def select_9(student_name: str):
+    try:
+        results = (
+            session.query(Subject.name)
+            .join(Grade, Grade.subject_id == Subject.id)
+            .join(Student, Student.id == Grade.student_id)
+            .filter(Student.name == student_name)
+            .distinct()
+            .all()
+        )
+
+        if not results:
+            return "no courses found for this student"
+
+        return [result[0] for result in results]
+
+    except Exception as e:
+        return f"error: {str(e)}"
+
+
+def select_10(student_name: str, teacher_name: str):
+    try:
+        results = (
+            session.query(Subject.name)
+            .join(Grade, Grade.subject_id == Subject.id)
+            .join(Student, Student.id == Grade.student_id)
+            .join(Teacher, Teacher.id == Subject.teacher_id)
+            .filter(Student.name == student_name, Teacher.name == teacher_name)
+            .distinct()
+            .all()
+        )
+
+        if not results:
+            return "no courses found for this student and teacher combination"
+
+        return [result[0] for result in results]
+
+    except Exception as e:
+        return f"error: {str(e)}"
 
 
 if __name__ == "__main__":
-    print(select_8())
+    print(select_10("Brandy Walker", "Darlene Waters"))
