@@ -77,21 +77,22 @@ def seed_grades():
     with Session(engine) as session:
         students = session.query(Student.id).all()
         subjects = session.query(Subject.id).all()
-        for i in range(20):
-            new_grade = Grade(
-                grade=random.randint(1, 100),
-                student_id=students[i][0],
-                subject_id=random.choice(subjects)[0],
-                date=fake.date_this_year(),
-            )
-            session.add(new_grade)
-            session.commit()
+        for student in students:
+            for i in range(20):
+                new_grade = Grade(
+                    grade=random.randint(1, 100),
+                    student_id=student[0],
+                    subject_id=random.choice(subjects)[0],
+                    date=fake.date_this_year(),
+                )
+                session.add(new_grade)
+                session.commit()
     print(f"Data seeding complete. Created 20 new foreach students.")
 
 
 if __name__ == "__main__":
-    seed_groups()
-    seed_students()
-    seed_teachers()
-    seed_subjects()
+    # seed_groups()
+    # seed_students()
+    # seed_teachers()
+    # seed_subjects()
     seed_grades()
